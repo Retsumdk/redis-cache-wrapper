@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * redis-cache-wrapper - Redis caching layer for API responses
- * Built with Zo Computer by The BookMaster
+ * Built by Retsumdk
  */
 
 import { Command } from "commander";
