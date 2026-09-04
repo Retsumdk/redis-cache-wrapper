@@ -1,4 +1,15 @@
 import { describe, test, expect } from "bun:test";
-describe("redis-cache-wrapper", () => {
-  test("module loads", async () => { const m = await import("./index"); expect(m).toBeDefined(); });
+import { RedisCacheWrapper, MemoryStore, RedisStore, makeEntry, isFresh } from "../src/index";
+
+describe("public API", () => {
+  test("exports the wrapper and both backends", () => {
+    expect(typeof RedisCacheWrapper).toBe("function");
+    expect(typeof MemoryStore).toBe("function");
+    expect(typeof RedisStore).toBe("function");
+  });
+
+  test("exports entry helpers", () => {
+    expect(typeof makeEntry).toBe("function");
+    expect(typeof isFresh).toBe("function");
+  });
 });

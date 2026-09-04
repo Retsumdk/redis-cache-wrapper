@@ -1,51 +1,17 @@
-#!/usr/bin/env bun
 /**
- * redis-cache-wrapper - Redis caching layer for API responses
- * Built by Retsumdk
+ * Public entry point for the library API.
+ *
+ * ```ts
+ * import { RedisCacheWrapper, MemoryStore, RedisStore } from "redis-cache-wrapper";
+ * import Redis from "ioredis";
+ *
+ * const cache = new RedisCacheWrapper(new RedisStore(new Redis()), { ttlMs: 60_000 });
+ * const data = await cache.wrap("users:42", () => fetchUser(42));
+ * ```
  */
 
-import { Command } from "commander";
-import { existsSync, readFileSync } from "fs";
-import { join } from "path";
-
-interface Config {
-  apiKey?: string;
-  baseUrl: string;
-  timeout: number;
-  retries: number;
-}
-
-const DEFAULTS: Config = {
-  baseUrl: "https://api.example.com",
-  timeout: 30000,
-  retries: 3,
-};
-
-function loadConfig(): Config {
-  const cfgPath = join(process.cwd(), "config.json");
-  if (existsSync(cfgPath)) {
-    try {
-      return { ...DEFAULTS, ...JSON.parse(readFileSync(cfgPath, "utf-8")) };
-    } catch { /* ignore */ }
-  }
-  return { ...DEFAULTS };
-}
-
-async function main(cfg: Config) {
-  console.log(`[${name}] Connected to ${cfg.baseUrl}`);
-  console.log(`[${name}] Timeout: ${cfg.timeout}ms | Retries: ${cfg.retries}`);
-  // TODO: implement your logic here
-  console.log(`[${name}] Done.`);
-}
-
-const program = new Command();
-program.name("redis-cache-wrapper").description("Redis caching layer for API responses").version("1.0.0")
-  .option("-c, --config <path>", "Config file path", "config.json")
-  .option("-v, --verbose", "Verbose mode")
-  .action(async (opts) => {
-    const cfg = loadConfig();
-    if (opts.verbose) console.log("Verbose mode on");
-    try { await main(cfg); }
-    catch (e) { console.error(`Error: ${e}`); process.exit(1); }
-  });
-program.parse(process.argv);
+export { RedisCacheWrapper } from "./cache";
+export type { CacheOptions, CacheStats } from "./cache";
+export { MemoryStore, RedisStore } from "./store";
+export type { CacheEntry, CacheStore } from "./store";
+export { isFresh, makeEntry } from "./store";
